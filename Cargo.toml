@@ -6,12 +6,14 @@ authors = ["Lev Kruglyak <lev.kruglyak2014@gmail.com>"]
 description = "Simple wrapper engine library for making graphical Vulkano apps with immediate mode UI."
 
 [dependencies]
+# Exceptional care must be taken here to avoid version conflicts
+
 # Gui
-egui = { version = "0.25", optional = true }
+egui = { version = "0.24", optional = true }
 egui_winit_vulkano = { version = "0.27", optional = true }
 
 # Windowing
-winit = "0.29"
+winit = "0.28"
 
 # Vulkano dependencies
 vulkano = "0.34"

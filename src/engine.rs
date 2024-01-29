@@ -31,7 +31,11 @@ pub trait Engine {
     fn immediate_ui(&mut self, ctx: &<Self::UI as UIBackend>::Context, context: &EngineContext) {}
 
     /// Viewport rendering code goes here
-    fn draw_viewport(&mut self, viewport: Viewport) -> Option<Arc<SecondaryAutoCommandBuffer>> {
+    fn draw_viewport(
+        &mut self,
+        viewport: Viewport,
+        context: &EngineContext,
+    ) -> Option<Arc<SecondaryAutoCommandBuffer>> {
         None
     }
 

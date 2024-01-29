@@ -1,12 +1,15 @@
-use hatchery::{EguiBackend, Engine, EngineLauncher, UIBackend};
+use std::sync::Arc;
 
-pub struct SimpleEngine;
+use hatchery::{EguiBackend, Engine, EngineContext, EngineLauncher, UIBackend};
+use vulkano::{command_buffer::SecondaryAutoCommandBuffer, pipeline::graphics::viewport::Viewport};
+
+pub struct SimpleEngine {}
 
 impl Engine for SimpleEngine {
     type UI = EguiBackend;
 
     fn init(_: &hatchery::EngineContext) -> Self {
-        Self
+        Self {}
     }
 
     fn immediate_ui(
@@ -17,6 +20,14 @@ impl Engine for SimpleEngine {
         egui::Window::new("Hello, World!").show(ctx, |ui| {
             ui.label("This is a window!");
         });
+    }
+
+    fn draw_viewport(
+        &mut self,
+        _: Viewport,
+        _: &EngineContext,
+    ) -> Option<Arc<SecondaryAutoCommandBuffer>> {
+        None
     }
 }
 

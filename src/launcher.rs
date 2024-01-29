@@ -134,7 +134,7 @@ where
                     engine.immediate_ui(ctx, &mut context);
                 });
 
-                render_pass.draw(&mut ui, &mut engine, &mut context.windows);
+                render_pass.draw(&mut ui, &mut engine, &mut context);
             }
             Event::MainEventsCleared => {
                 context

@@ -11,9 +11,9 @@ use vulkano::{
     render_pass::{Framebuffer, FramebufferCreateInfo, RenderPass, Subpass},
     sync::GpuFuture,
 };
-use vulkano_util::{context::VulkanoContext, window::VulkanoWindows};
+use vulkano_util::context::VulkanoContext;
 
-use crate::{ui::UIBackend, Engine};
+use crate::{ui::UIBackend, Engine, EngineContext};
 
 pub struct FinalRenderPass {
     graphics_queue: Arc<Queue>,
@@ -68,16 +68,19 @@ impl FinalRenderPass {
         .expect("Error creating render pass!")
     }
 
-    pub fn draw<E>(&self, ui: &mut E::UI, engine: &mut E, windows: &mut VulkanoWindows)
+    pub fn draw<E>(&self, ui: &mut E::UI, engine: &mut E, context: &mut EngineContext)
     where
         E: Engine + 'static,
     {
         // Get target information from windows
-        let scale_factor = windows.get_primary_window().unwrap().scale_factor();
-        let renderer = windows.get_primary_renderer_mut().unwrap();
+        let scale_factor = context.windows.get_primary_window().unwrap().scale_factor();
+        let (before_future, target) = {
+            let renderer = context.windows.get_primary_renderer_mut().unwrap();
+            let before_future = renderer.acquire().unwrap();
+            let target = renderer.swapchain_image_view();
 
-        let before_future = renderer.acquire().unwrap();
-        let target = renderer.swapchain_image_view();
+            (before_future, target)
+        };
 
         // Get dimensions
         let image_dimensions = target.image().extent();
@@ -120,7 +123,7 @@ impl FinalRenderPass {
             .map(|v| v.to_viewport(scale_factor))
             .unwrap_or_default();
 
-        if let Some(cb) = engine.draw_viewport(viewport) {
+        if let Some(cb) = engine.draw_viewport(viewport, &context) {
             primary_builder.execute_commands(cb).unwrap();
         }
 
@@ -158,6 +161,10 @@ impl FinalRenderPass {
             .then_execute(self.graphics_queue.clone(), command_buffer)
             .unwrap();
 
-        renderer.present(after_future.boxed(), true);
+        context
+            .windows
+            .get_primary_renderer_mut()
+            .unwrap()
+            .present(after_future.boxed(), true);
     }
 }

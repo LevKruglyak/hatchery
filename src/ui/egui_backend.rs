@@ -4,7 +4,7 @@ use crate::ui::*;
 use vulkano::image::SampleCount;
 
 pub struct EguiBackend {
-    gui: egui_winit_vulkano::Gui,
+    renderer: egui_winit_vulkano::Gui,
 }
 
 impl UIBackend for EguiBackend {
@@ -18,7 +18,7 @@ impl UIBackend for EguiBackend {
         format: Format,
     ) -> Self {
         Self {
-            gui: egui_winit_vulkano::Gui::new_with_subpass(
+            renderer: egui_winit_vulkano::Gui::new_with_subpass(
                 target,
                 surface,
                 graphics_queue,
@@ -35,7 +35,7 @@ impl UIBackend for EguiBackend {
     }
 
     fn context(&self) -> Self::Context {
-        self.gui.context()
+        self.renderer.context()
     }
 
     fn viewport(&self) -> Option<AvailableRectangle> {
@@ -50,17 +50,18 @@ impl UIBackend for EguiBackend {
         })
     }
 
-    fn draw(&mut self, dimensions: [u32; 2]) -> Arc<SecondaryAutoCommandBuffer> {
-        self.gui.draw_on_subpass_image(dimensions)
+    fn draw(&mut self, dimensions: [f64; 2]) -> Arc<SecondaryAutoCommandBuffer> {
+        self.renderer
+            .draw_on_subpass_image([dimensions[0] as u32, dimensions[1] as u32])
     }
 
     fn immediate_ui(&mut self, ui: impl FnOnce(&mut Self::Context)) {
-        self.gui.immediate_ui(|context| {
+        self.renderer.immediate_ui(|context| {
             ui(&mut context.context());
         });
     }
 
     fn update(&mut self, event: &WindowEvent) -> bool {
-        self.gui.update(event)
+        self.renderer.update(event)
     }
 }

@@ -23,7 +23,7 @@ pub trait UIBackend {
         format: Format,
     ) -> Self;
 
-    fn draw(&mut self, dimensions: [u32; 2]) -> Arc<SecondaryAutoCommandBuffer>;
+    fn draw(&mut self, dimensions: [f64; 2]) -> Arc<SecondaryAutoCommandBuffer>;
 
     /// Rebuild the UI
     fn immediate_ui(&mut self, ui: impl FnOnce(&mut Self::Context));
@@ -44,7 +44,8 @@ pub struct AvailableRectangle {
 }
 
 impl AvailableRectangle {
-    pub fn to_viewport(&self, scale_factor: f32) -> Viewport {
+    pub fn to_viewport(&self, scale_factor: f64) -> Viewport {
+        let scale_factor = scale_factor as f32;
         Viewport {
             offset: [self.origin[0] * scale_factor, self.origin[1] * scale_factor],
             extent: [

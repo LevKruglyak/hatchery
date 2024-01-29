@@ -109,6 +109,7 @@ where
         // Create engine
         let mut engine = E::init(&context);
 
+        engine.start(&context);
         event_loop.run(move |event, _, control_flow| match event {
             Event::WindowEvent { event, .. } => {
                 if !ui.update(&event) {

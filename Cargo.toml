@@ -20,12 +20,17 @@ vulkano = "0.34"
 vulkano-util = "0.34"
 vulkano-win = "0.34"
 vulkano-shaders = "0.34"
+lazy_static = "1.4.0"
+chrono = "0.4.33"
 
 # Utils
 # systemstat = "0.1.11"
 # lazy_static = "1.4"
 # rand = "0.8"
 # bytemuck = { version = "1.7", features = ["derive", "extern_crate_std", "min_const_generics"] }
+
+[dev-dependencies]
+egui_demo_lib = "0.24"
 
 [features]
 egui = ["dep:egui", "dep:egui_winit_vulkano"]

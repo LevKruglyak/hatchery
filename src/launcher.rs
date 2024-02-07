@@ -65,7 +65,6 @@ where
             },
             device_features: options.features,
             device_extensions: options.device_extensions,
-            print_device_name: true,
             ..VulkanoConfig::default()
         };
         let vulkan = VulkanoContext::new(vulkano_config);
@@ -152,7 +151,7 @@ impl Default for WindowOptions {
     fn default() -> Self {
         Self {
             title: "Hatchery App",
-            dimensions: [300, 300],
+            dimensions: [1000, 1000],
         }
     }
 }
